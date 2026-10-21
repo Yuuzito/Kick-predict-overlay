@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kick Prediction Overlay - OBS Studio</title>
+  <meta name="description"
+    content="Overlay interactivo y elegante para OBS Studio que muestra predicciones en vivo de Kick, porcentajes, puntos y ganador.">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Canvas para partículas y confeti de celebración del ganador -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Barra Superior de Vista Previa (Simulador de Stream - Solo visible en navegador para configurar, oculta en OBS) -->
+  <header id="preview-hud" class="preview-hud" aria-label="Controles de Vista Previa">
+    <div class="preview-hud-left">
+      <span class="preview-badge">🔴 VISTA PREVIA</span>
+      <span class="preview-desc">Simulador de Stream</span>
+    </div>
+
+    <div class="preview-hud-actions">
+      <div class="bg-switch-group">
+        <span class="bg-switch-label">Fondo:</span>
+        <button type="button" class="btn-bg active" data-bg="game" title="Simular juego oscuro">🎮 Juego</button>
+        <button type="button" class="btn-bg" data-bg="bright" title="Simular juego claro">☀️ Claro</button>
+        <button type="button" class="btn-bg" data-bg="checker" title="Ver cuadrícula de transparencia">🏁 Alpha</button>
+      </div>
+
+      <button type="button" id="btn-toggle-visibility" class="btn-preview-action" title="Mostrar u ocultar el widget para probar">
+        <span id="vis-icon">👁️</span>
+        <span id="vis-text">Alternar Visibilidad</span>
+      </button>
+
+      <button type="button" id="btn-open-settings" class="btn-preview-action btn-preview-highlight" title="Abrir panel de configuración">
+        <span>⚙️ Configurar OBS</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Contenedor principal del Overlay -->
+  <main class="overlay-viewport">
+
+    <!-- Widget de la Predicción -->
+    <article id="prediction-card" class="prediction-widget" aria-live="polite">
+      <!-- Título / Pregunta de la predicción -->
+      <section class="timer-box">
+        <div id="status-pill" class="status-pill status-active">
+          <span class="status-dot"></span>
+          <span id="status-text">Votación Abierta</span>
+          <span id="timer-text" class="timer-text">04:32</span>
+        </div>
+      </section>
+      <section class="prediction-title-box">
+
+        <h1 id="prediction-title" class="prediction-title">Cargando predicción...</h1>
+      </section>
+
+      <!-- Estadísticas de la Bolsa de Puntos -->
+      <section class="pool-stats-row">
+        <div class="pool-total">
+          <span>Total Apostado:</span>
+          <span id="total-points-display" class="points-value">0 pts</span>
+        </div>
+        <div class="voters-total">
+          <span id="total-voters-display">0 votantes</span>
+        </div>
+      </section>
+
+      <!-- Arena de Opciones: Opción 1 vs Opción 2 -->
+      <section class="outcomes-arena">
+
+        <!-- Tarjeta Opción 1 (Azul / Cian) -->
+        <div id="outcome-card-1" class="outcome-card option-1">
+          <div class="winner-badge">
+            <span>👑</span>
+            <span>GANADOR</span>
+          </div>
+
+          <div class="outcome-top-row">
+            <h2 id="outcome-1-title" class="outcome-title">Opción A</h2>
+            <span id="outcome-1-multiplier" class="multiplier-pill">1.00x</span>
+          </div>
+
+          <div class="outcome-percentage-row">
+            <span id="outcome-1-percent" class="percentage-value">50</span>
+            <span class="percentage-symbol">%</span>
+          </div>
+
+          <div class="outcome-stats-footer">
+            <span id="outcome-1-points" class="outcome-points">0 pts</span>
+            <span id="outcome-1-voters">0 votos</span>
+          </div>
+        </div>
+
+        <!-- Tarjeta Opción 2 (Magenta / Violeta) -->
+        <div id="outcome-card-2" class="outcome-card option-2">
+          <div class="winner-badge">
+            <span>👑</span>
+            <span>GANADOR</span>
+          </div>
+
+          <div class="outcome-top-row">
+            <h2 id="outcome-2-title" class="outcome-title">Opción B</h2>
+            <span id="outcome-2-multiplier" class="multiplier-pill">1.00x</span>
+          </div>
+
+          <div class="outcome-percentage-row">
+            <span id="outcome-2-percent" class="percentage-value">50</span>
+            <span class="percentage-symbol">%</span>
+          </div>
+
+          <div class="outcome-stats-footer">
+            <span id="outcome-2-points" class="outcome-points">0 pts</span>
+            <span id="outcome-2-voters">0 votos</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Barra de progreso dividida -->
+      <div class="progress-bar-container" aria-label="Porcentaje de votos">
+        <div id="progress-bar-1" class="progress-segment-1"></div>
+        <div id="progress-divider" class="progress-divider" style="left: 50%;"></div>
+        <div id="progress-bar-2" class="progress-segment-2"></div>
+      </div>
+
+      <!-- Banner de Anuncio de Ganador -->
+      <section id="winner-banner" class="winner-alert-banner">
+        <span class="winner-trophy-icon">🏆</span>
+        <div class="winner-text-content">
+          <span class="winner-label">¡Resultado Oficial!</span>
+          <span id="winner-name-display" class="winner-outcome-name">Opción Ganadora</span>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <!-- Panel flotante de Control y Configuración para el Streamer -->
+  <aside id="controller-dock" class="controller-dock" aria-label="Panel de Configuración">
+    <button id="toggle-dock-btn" class="btn-toggle-dock" title="Abrir configuración y simulación">
+      <span>⚙️</span>
+      <span>Configuración OBS</span>
+    </button>
+
+    <div id="dock-panel" class="dock-panel collapsed">
+      <div class="dock-title-row">
+        <div class="dock-title">
+          <span>🟢</span>
+          <span>Kick Overlay Control</span>
+        </div>
+        <button id="close-dock-btn" class="btn-secondary" style="padding: 2px 8px;">✕</button>
+      </div>
+
+      <!-- Conexión a Canal Real -->
+      <div class="form-group">
+        <label for="channel-input">Canal de Kick (Slug / Usuario):</label>
+        <div class="input-row">
+          <input type="text" id="channel-input" class="input-field" placeholder="ej. xqc o adinross" value="xqc">
+          <button id="btn-connect" class="btn-primary">Conectar</button>
+        </div>
+      </div>
+
+      <!-- Opciones de Diseño / Layouts -->
+      <div class="form-group">
+        <label>Diseño de Interfaz:</label>
+        <div class="layout-selector-grid" id="layout-selector">
+          <button type="button" class="btn-layout-option active" data-layout="compact" title="Diseño compacto optimizado para stream">
+            <span>📐</span>
+            <span>Compacto</span>
+          </button>
+          <button type="button" class="btn-layout-option" data-layout="standard" title="Diseño espacioso y clásico">
+            <span>🖼️</span>
+            <span>Estándar</span>
+          </button>
+          <button type="button" class="btn-layout-option" data-layout="horizontal" title="Formato franja horizontal / esports">
+            <span>📏</span>
+            <span>Horizontal</span>
+          </button>
+          <button type="button" class="btn-layout-option" data-layout="minimal" title="Micro widget para esquinas o webcam">
+            <span>✨</span>
+            <span>Minimal</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Opciones de Visibilidad -->
+      <div class="form-group">
+        <label>Preferencias de Overlay:</label>
+        <div style="display: flex; gap: 12px; font-size: 0.8rem;">
+          <label
+            style="cursor: pointer; display: flex; align-items: center; gap: 6px; text-transform: none; color: #FFF;">
+            <input type="checkbox" id="autohide-toggle" checked>
+            <span>Auto-ocultar cuando esté inactivo (Activado)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Modo Simulación / Prueba para Streamer -->
+      <div class="form-group">
+        <label>Modo Demo (Prueba sin directo):</label>
+        <div class="sim-controls-grid">
+          <button id="btn-demo-start" class="btn-secondary">▶ Nueva Demo (Mostrar)</button>
+          <button id="btn-demo-votes" class="btn-secondary">⚡ Simular Votos</button>
+          <button id="btn-demo-lock" class="btn-secondary">🔒 Bloquear</button>
+          <button id="btn-demo-win-1" class="btn-secondary">🏆 Gana Opción A</button>
+          <button id="btn-demo-win-2" class="btn-secondary">🏆 Gana Opción B</button>
+          <button id="btn-demo-win-autohide" class="btn-secondary" title="Declara ganador y se auto-oculta en 5s">⏳ Ganar y Ocultar en 5s</button>
+          <button id="btn-demo-cancel" class="btn-secondary" style="border-color: rgba(255, 107, 107, 0.45); color: #ff8585;" title="Simular que la predicción fue cancelada, reembolsada y se auto-oculta en 5s">🚫 Cancelar (Reembolso y Ocultar)</button>
+          <button id="btn-demo-inactive" class="btn-secondary" style="border-color: rgba(255, 80, 80, 0.45); color: #ff8585;">👻 Simular Inactivo (Ocultar)</button>
+          <button id="btn-demo-reset" class="btn-secondary" style="grid-column: span 2;">🔄 Reset a Canal Real</button>
+        </div>
+      </div>
+
+      <!-- Enlace para OBS Studio -->
+      <div class="obs-link-box">
+        <label style="color: var(--kick-green);">Link para Fuente de Navegador OBS:</label>
+        <span id="obs-url-preview" class="obs-link-text"></span>
+        <button id="btn-copy-obs-url" class="btn-primary" style="margin-top: 4px;">📋 Copiar Link para OBS</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Lógica y motor JavaScript -->
+  <script src="app.js"></script>
+</body>
+
+</html>
