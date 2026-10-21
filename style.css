@@ -229,7 +229,27 @@ body.clean-mode #preview-hud {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 24px;
+  padding: 30px;
+}
+
+/* Pantalla OBS 1920x1080: Modificadores de Posición Vertical */
+body.pos-top .overlay-viewport {
+  align-items: flex-start;
+  padding-top: 45px;
+}
+
+body.pos-bottom .overlay-viewport {
+  align-items: flex-end;
+  padding-bottom: 45px;
+}
+
+body.pos-center .overlay-viewport {
+  align-items: center;
+}
+
+/* En vista previa de navegador dejamos espacio superior para la barra HUD */
+body:not(.clean-mode).pos-top .overlay-viewport {
+  padding-top: 80px;
 }
 
 /* Confetti Layer (Zero click interference) */
@@ -244,12 +264,12 @@ body.clean-mode #preview-hud {
 }
 
 /* ==========================================================================
-   PREDICTION CARD / WIDGET
+   PREDICTION CARD / WIDGET (1080p NATIVE BROADCAST RESOLUTION)
    ========================================================================== */
 .prediction-widget {
   position: relative;
-  width: 100%;
-  max-width: 640px;
+  width: 94%;
+  max-width: 1680px;
   background: transparent;
   border: none;
   backdrop-filter: none;
@@ -258,7 +278,7 @@ body.clean-mode #preview-hud {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 18px;
   opacity: 1;
   visibility: visible;
   transform: translateY(0) scale(1);
@@ -276,93 +296,65 @@ body.clean-mode #preview-hud {
 }
 
 /* ==========================================================================
-   HEADER: Channel, Title, Live Status, Timer
+   HEADER: Title on Left & Timer Pill in Right Corner
    ========================================================================== */
-.widget-header {
+.prediction-header-row {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 14px;
+  gap: 24px;
+  width: 100%;
 }
 
-.channel-info {
+.prediction-title {
+  flex: 1;
+  font-size: 2.3rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
+  color: #FFFFFF;
+  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.98), 0 6px 28px rgba(0, 0, 0, 0.95), 0 0 6px #000;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.9));
+  margin: 0;
+  word-break: break-word;
+}
+
+.timer-box {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  margin: 0;
 }
 
-.streamer-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: 2px solid var(--kick-green);
-  box-shadow: 0 0 10px var(--kick-green-glow);
-  object-fit: cover;
-  background-color: #12161f;
-}
-
-.channel-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.channel-name-row {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.channel-name {
-  font-weight: 700;
-  font-size: 0.95rem;
-  letter-spacing: 0.3px;
-  color: var(--text-main);
-}
-
-.verified-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 15px;
-  height: 15px;
-  background: var(--kick-green);
-  color: #000;
-  border-radius: 50%;
-  font-size: 10px;
-  font-weight: 900;
-}
-
-.prediction-label {
-  font-size: 0.72rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: var(--kick-green);
+.timer-box .status-pill {
+  width: fit-content;
+  white-space: nowrap;
 }
 
 /* Status & Countdown Timer */
 .status-pill {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
+  gap: 10px;
+  padding: 10px 22px;
   border-radius: 50px;
-  font-size: 0.75rem;
+  font-size: 1.15rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(10, 14, 22, 0.78);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.85), 0 2px 4px rgba(0, 0, 0, 0.95);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  background: rgba(10, 14, 22, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.88), 0 2px 6px rgba(0, 0, 0, 0.95);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
   transition: var(--trans-smooth);
 }
 
 .status-dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background-color: var(--kick-green);
   box-shadow: 0 0 10px var(--kick-green);
@@ -416,43 +408,8 @@ body.clean-mode #preview-hud {
 /* Timer text */
 .timer-text {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
-  letter-spacing: 0.5px;
-}
-
-/* Prediction Header: Title on Left, Timer Pill on Right Corner */
-.prediction-header-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  width: 100%;
-}
-
-.prediction-title {
-  flex: 1;
   font-size: 1.25rem;
-  font-weight: 800;
-  line-height: 1.25;
-  letter-spacing: -0.3px;
-  color: #FFFFFF;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 4px 22px rgba(0, 0, 0, 0.92), 0 0 4px #000;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.9));
-  margin: 0;
-  word-break: break-word;
-}
-
-.timer-box {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-shrink: 0;
-  margin: 0;
-}
-
-.timer-box .status-pill {
-  width: fit-content;
-  white-space: nowrap;
+  letter-spacing: 0.8px;
 }
 
 /* Total Points Banner */
@@ -460,7 +417,7 @@ body.clean-mode #preview-hud {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.78rem;
+  font-size: 1.15rem;
   color: #c4d1e2;
   border-bottom: none;
   padding-bottom: 2px;
@@ -471,7 +428,7 @@ body.clean-mode #preview-hud {
 .pool-total {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-weight: 600;
 }
 
@@ -479,14 +436,14 @@ body.clean-mode #preview-hud {
   color: var(--kick-green);
   font-family: var(--font-mono);
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 1.35rem;
   text-shadow: 0 0 10px var(--kick-green-glow), 0 2px 6px rgba(0, 0, 0, 0.95);
 }
 
 .voters-total {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
 }
 
@@ -502,16 +459,16 @@ body.clean-mode #preview-hud {
 
 .outcome-card {
   position: relative;
-  background: rgba(10, 14, 22, 0.45);
-  border-radius: 16px;
-  border: 1px solid var(--border-glass);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.85), 0 2px 6px rgba(0, 0, 0, 0.95), 0 0 1px rgba(255, 255, 255, 0.12);
-  padding: 14px 16px;
+  background: rgba(10, 14, 22, 0.55);
+  border-radius: 20px;
+  border: 1.5px solid var(--border-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.88), 0 2px 8px rgba(0, 0, 0, 0.95), 0 0 1px rgba(255, 255, 255, 0.15);
+  padding: 22px 28px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   transition: var(--trans-smooth);
   overflow: hidden;
 }
@@ -523,48 +480,48 @@ body.clean-mode #preview-hud {
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 4px;
   transition: var(--trans-smooth);
 }
 
 /* Option 1 Style */
 .outcome-card.option-1 {
-  border-color: rgba(0, 229, 255, 0.25);
+  border-color: rgba(0, 229, 255, 0.3);
 }
 .outcome-card.option-1::before {
   background: var(--opt1-gradient);
-  box-shadow: 0 0 12px var(--opt1-glow);
+  box-shadow: 0 0 14px var(--opt1-glow);
 }
 .outcome-card.option-1:hover {
   border-color: var(--opt1-color);
-  box-shadow: 0 0 20px var(--opt1-glow);
+  box-shadow: 0 0 24px var(--opt1-glow);
 }
 
 /* Option 2 Style */
 .outcome-card.option-2 {
-  border-color: rgba(255, 42, 133, 0.25);
+  border-color: rgba(255, 42, 133, 0.3);
 }
 .outcome-card.option-2::before {
   background: var(--opt2-gradient);
-  box-shadow: 0 0 12px var(--opt2-glow);
+  box-shadow: 0 0 14px var(--opt2-glow);
 }
 .outcome-card.option-2:hover {
   border-color: var(--opt2-color);
-  box-shadow: 0 0 20px var(--opt2-glow);
+  box-shadow: 0 0 24px var(--opt2-glow);
 }
 
 /* Winner Card State */
 .outcome-card.is-winner {
   border-color: var(--gold) !important;
-  background: linear-gradient(180deg, rgba(255, 215, 0, 0.15) 0%, rgba(15, 19, 28, 0.95) 100%) !important;
-  box-shadow: 0 0 30px var(--gold-glow), 0 0 60px rgba(255, 215, 0, 0.2) !important;
+  background: linear-gradient(180deg, rgba(255, 215, 0, 0.18) 0%, rgba(15, 19, 28, 0.95) 100%) !important;
+  box-shadow: 0 0 35px var(--gold-glow), 0 0 70px rgba(255, 215, 0, 0.25) !important;
   transform: translateY(-2px);
   animation: winner-pulse 2s infinite alternate;
 }
 .outcome-card.is-winner::before {
   background: var(--gold-gradient) !important;
-  height: 4px;
-  box-shadow: 0 0 16px var(--gold);
+  height: 5px;
+  box-shadow: 0 0 20px var(--gold);
 }
 
 /* Loser Card State (when resolved) */
@@ -577,19 +534,19 @@ body.clean-mode #preview-hud {
 .winner-badge {
   display: none;
   position: absolute;
-  top: 10px;
-  right: 12px;
+  top: 12px;
+  right: 16px;
   background: var(--gold-gradient);
   color: #121005;
-  font-size: 0.68rem;
+  font-size: 0.88rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  padding: 3px 8px;
+  padding: 4px 12px;
   border-radius: 20px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.4);
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   animation: bounce-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -602,27 +559,27 @@ body.clean-mode #preview-hud {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 8px;
+  gap: 12px;
 }
 
 .outcome-title {
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: 1.75rem;
+  font-weight: 800;
   line-height: 1.25;
   color: var(--text-main);
-  max-width: 70%;
+  max-width: 75%;
   word-break: break-word;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95), 0 0 2px #000;
 }
 
 .multiplier-pill {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  padding: 3px 7px;
-  border-radius: 6px;
+  padding: 5px 12px;
+  border-radius: 8px;
   background: rgba(0, 0, 0, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
   color: var(--text-muted);
@@ -630,11 +587,11 @@ body.clean-mode #preview-hud {
 
 .outcome-card.option-1 .multiplier-pill {
   color: var(--opt1-color);
-  border-color: rgba(0, 229, 255, 0.3);
+  border-color: rgba(0, 229, 255, 0.35);
 }
 .outcome-card.option-2 .multiplier-pill {
   color: var(--opt2-color);
-  border-color: rgba(255, 42, 133, 0.3);
+  border-color: rgba(255, 42, 133, 0.35);
 }
 .outcome-card.is-winner .multiplier-pill {
   color: #1a1600;
@@ -642,39 +599,39 @@ body.clean-mode #preview-hud {
   border-color: var(--gold);
 }
 
-/* Percentage Large Display */
+/* Percentage Large Display (1080p Razor-Sharp) */
 .outcome-percentage-row {
   display: flex;
   align-items: baseline;
-  gap: 4px;
-  margin: 2px 0;
+  gap: 6px;
+  margin: 4px 0;
 }
 
 .percentage-value {
   font-family: var(--font-mono);
-  font-size: 2.1rem;
-  font-weight: 800;
+  font-size: 5rem;
+  font-weight: 900;
   line-height: 1;
-  letter-spacing: -1px;
+  letter-spacing: -2px;
   text-shadow: 0 3px 14px rgba(0, 0, 0, 0.95), 0 0 20px currentColor;
 }
 
 .outcome-card.option-1 .percentage-value {
   color: var(--opt1-color);
-  text-shadow: 0 0 22px var(--opt1-glow), 0 3px 12px rgba(0, 0, 0, 0.95);
+  text-shadow: 0 0 26px var(--opt1-glow), 0 3px 12px rgba(0, 0, 0, 0.95);
 }
 .outcome-card.option-2 .percentage-value {
   color: var(--opt2-color);
-  text-shadow: 0 0 22px var(--opt2-glow), 0 3px 12px rgba(0, 0, 0, 0.95);
+  text-shadow: 0 0 26px var(--opt2-glow), 0 3px 12px rgba(0, 0, 0, 0.95);
 }
 .outcome-card.is-winner .percentage-value {
   color: var(--gold);
-  text-shadow: 0 0 25px var(--gold-glow), 0 3px 12px rgba(0, 0, 0, 0.95);
+  text-shadow: 0 0 30px var(--gold-glow), 0 3px 12px rgba(0, 0, 0, 0.95);
 }
 
 .percentage-symbol {
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: 2.2rem;
+  font-weight: 800;
   opacity: 0.85;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95);
 }
@@ -684,11 +641,11 @@ body.clean-mode #preview-hud {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.76rem;
+  font-size: 1.1rem;
   color: #adbcd0;
-  font-weight: 500;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 6px;
+  font-weight: 600;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 10px;
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.95);
 }
 
@@ -700,18 +657,18 @@ body.clean-mode #preview-hud {
 }
 
 /* ==========================================================================
-   DYNAMIC PROGRESS / SPLIT BAR
+   DYNAMIC PROGRESS / SPLIT BAR (1080p Pro Scale)
    ========================================================================== */
 .progress-bar-container {
   position: relative;
   width: 100%;
-  height: 9px;
+  height: 16px;
   border-radius: 20px;
   overflow: hidden;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.85), 0 1px 3px rgba(0, 0, 0, 0.95), 0 0 1px rgba(255, 255, 255, 0.15);
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7));
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.88), 0 1px 4px rgba(0, 0, 0, 0.95), 0 0 1px rgba(255, 255, 255, 0.15);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7));
 }
 
 .progress-segment-1 {
@@ -719,7 +676,7 @@ body.clean-mode #preview-hud {
   background: var(--opt1-gradient);
   width: 50%;
   transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 0 10px var(--opt1-glow);
+  box-shadow: 0 0 12px var(--opt1-glow);
 }
 
 .progress-segment-2 {
@@ -727,7 +684,7 @@ body.clean-mode #preview-hud {
   background: var(--opt2-gradient);
   width: 50%;
   transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 0 10px var(--opt2-glow);
+  box-shadow: 0 0 12px var(--opt2-glow);
 }
 
 /* Divider notch in progress bar */
@@ -735,9 +692,9 @@ body.clean-mode #preview-hud {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 3px;
+  width: 4px;
   background: #FFFFFF;
-  box-shadow: 0 0 8px #FFF;
+  box-shadow: 0 0 10px #FFF;
   transform: translateX(-50%);
   transition: left 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 2;
@@ -749,15 +706,15 @@ body.clean-mode #preview-hud {
 .winner-alert-banner {
   display: none;
   background: linear-gradient(90deg, rgba(255, 215, 0, 0.18) 0%, rgba(255, 180, 0, 0.3) 50%, rgba(255, 215, 0, 0.18) 100%);
-  border: 1px solid rgba(255, 215, 0, 0.55);
-  border-radius: 12px;
-  padding: 10px 14px;
+  border: 1.5px solid rgba(255, 215, 0, 0.6);
+  border-radius: 16px;
+  padding: 14px 22px;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.88), 0 0 18px rgba(255, 215, 0, 0.3);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  gap: 16px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.88), 0 0 22px rgba(255, 215, 0, 0.3);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95);
   animation: slide-up-fade 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), glow-banner 2s infinite alternate;
 }
@@ -767,7 +724,7 @@ body.clean-mode #preview-hud {
 }
 
 .winner-trophy-icon {
-  font-size: 1.4rem;
+  font-size: 2rem;
   animation: trophy-shake 1.2s infinite;
 }
 
@@ -778,18 +735,18 @@ body.clean-mode #preview-hud {
 }
 
 .winner-label {
-  font-size: 0.68rem;
+  font-size: 0.85rem;
   font-weight: 800;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.8px;
   color: var(--gold);
   text-transform: uppercase;
 }
 
 .winner-outcome-name {
-  font-size: 1.05rem;
+  font-size: 1.45rem;
   font-weight: 800;
   color: #FFFFFF;
-  text-shadow: 0 0 12px var(--gold-glow);
+  text-shadow: 0 0 14px var(--gold-glow);
 }
 
 /* ==========================================================================
@@ -1051,161 +1008,88 @@ body.clean-mode .controller-dock {
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   transition: var(--trans-smooth);
 }
 
-.btn-layout-option:hover {
+.btn-layout-option:hover,
+.btn-pos-option:hover {
   background: rgba(255, 255, 255, 0.12);
   color: #FFFFFF;
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-.btn-layout-option.active {
+.btn-layout-option.active,
+.btn-pos-option.active {
   background: rgba(83, 252, 24, 0.15);
   border-color: var(--kick-green);
   color: var(--kick-green);
   box-shadow: 0 0 10px rgba(83, 252, 24, 0.25);
 }
 
-/* ==========================================================================
-   LAYOUT 1: COMPACTO (RECOMENDADO / PREDETERMINADO)
-   Optimizado para ocupar el menor espacio visual en stream
-   ========================================================================== */
-body.layout-compact .prediction-widget {
-  max-width: 480px;
-  padding: 0;
-  gap: 10px;
-}
-
-body.layout-compact .timer-box {
-  margin: 0;
-}
-
-body.layout-compact .status-pill {
-  padding: 4px 10px;
-  font-size: 0.7rem;
-}
-
-body.layout-compact .status-dot {
-  width: 6px;
-  height: 6px;
-}
-
-body.layout-compact .prediction-title {
-  font-size: 1.12rem;
-  line-height: 1.25;
-}
-
-body.layout-compact .pool-stats-row {
-  padding-bottom: 6px;
-  font-size: 0.72rem;
-}
-
-body.layout-compact .pool-total .points-value {
-  font-size: 0.82rem;
-}
-
-body.layout-compact .outcomes-arena {
-  gap: 10px;
-}
-
-body.layout-compact .outcome-card {
-  padding: 10px 12px;
-  gap: 4px;
-  border-radius: 12px;
-}
-
-body.layout-compact .outcome-title {
-  font-size: 0.92rem;
-  line-height: 1.2;
-}
-
-body.layout-compact .multiplier-pill {
-  font-size: 0.65rem;
-  padding: 2px 5px;
-}
-
-body.layout-compact .percentage-value {
-  font-size: 1.65rem;
-}
-
-body.layout-compact .percentage-symbol {
-  font-size: 0.95rem;
-}
-
-body.layout-compact .outcome-stats-footer {
-  font-size: 0.7rem;
-  padding-top: 4px;
-}
-
-body.layout-compact .progress-bar-container {
-  height: 7px;
-}
-
-body.layout-compact .winner-alert-banner {
-  padding: 8px 12px;
-  gap: 8px;
-}
-
-body.layout-compact .winner-trophy-icon {
-  font-size: 1.15rem;
-}
-
-body.layout-compact .winner-outcome-name {
-  font-size: 0.92rem;
+.btn-pos-option {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-glass);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--text-muted);
+  font-family: var(--font-main);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: var(--trans-smooth);
 }
 
 /* ==========================================================================
-   LAYOUT 2: ESTÁNDAR (ESPACIOSO)
+   LAYOUT 1: ESTÁNDAR (1080p FULL BROADCAST - RECOMENDADO / PREDETERMINADO)
+   Optimizado para ocupar el lienzo 1920x1080 con nitidez y presencia total
    ========================================================================== */
 body.layout-standard .prediction-widget {
-  max-width: 640px;
+  width: 94%;
+  max-width: 1680px;
   padding: 0;
-  gap: 14px;
-}
-
-body.layout-standard .timer-box {
-  margin: 0;
+  gap: 18px;
 }
 
 body.layout-standard .prediction-title {
-  font-size: 1.28rem;
+  font-size: 2.3rem;
 }
 
 body.layout-standard .percentage-value {
-  font-size: 2.1rem;
+  font-size: 5rem;
 }
 
 /* ==========================================================================
-   LAYOUT 3: BARRA HORIZONTAL (BANNER DEPORTIVO / ESPORTS)
-   Franja horizontal alargada y baja, ideal para bordes superior o inferior
+   LAYOUT 2: BARRA HORIZONTAL (BANNER DEPORTIVO / ESPORTS TICKER)
+   Franja horizontal ultra-ancha (1840px) ideal para borde superior o inferior
    ========================================================================== */
 body.layout-horizontal .prediction-widget {
-  max-width: 820px;
+  width: 96%;
+  max-width: 1840px;
   padding: 0;
-  gap: 10px;
-}
-
-body.layout-horizontal .timer-box {
-  margin: 0;
+  gap: 12px;
 }
 
 body.layout-horizontal .prediction-title {
-  font-size: 1.14rem;
+  font-size: 1.85rem;
 }
 
 body.layout-horizontal .outcomes-arena {
-  gap: 14px;
+  gap: 18px;
 }
 
 body.layout-horizontal .outcome-card {
-  padding: 10px 14px;
+  padding: 14px 22px;
   display: grid;
   grid-template-columns: 1fr auto;
   grid-template-rows: auto auto;
   align-items: center;
-  gap: 4px 10px;
+  gap: 6px 18px;
 }
 
 body.layout-horizontal .outcome-top-row {
@@ -1220,7 +1104,11 @@ body.layout-horizontal .outcome-percentage-row {
 }
 
 body.layout-horizontal .percentage-value {
-  font-size: 1.7rem;
+  font-size: 3.6rem;
+}
+
+body.layout-horizontal .multiplier-pill {
+  font-size: 1.1rem;
 }
 
 body.layout-horizontal .outcome-stats-footer {
@@ -1228,70 +1116,171 @@ body.layout-horizontal .outcome-stats-footer {
   grid-row: 2 / 3;
   border-top: none;
   padding-top: 0;
+  font-size: 1.05rem;
+}
+
+body.layout-horizontal .progress-bar-container {
+  height: 14px;
+}
+
+/* ==========================================================================
+   LAYOUT 3: COMPACTO (1080p MEDIANO)
+   ========================================================================== */
+body.layout-compact .prediction-widget {
+  width: 90%;
+  max-width: 1100px;
+  padding: 0;
+  gap: 14px;
+}
+
+body.layout-compact .prediction-title {
+  font-size: 1.7rem;
+}
+
+body.layout-compact .status-pill {
+  padding: 8px 16px;
+  font-size: 0.95rem;
+}
+
+body.layout-compact .status-dot {
+  width: 8px;
+  height: 8px;
+}
+
+body.layout-compact .pool-stats-row {
+  font-size: 0.95rem;
+}
+
+body.layout-compact .pool-total .points-value {
+  font-size: 1.1rem;
+}
+
+body.layout-compact .outcomes-arena {
+  gap: 16px;
+}
+
+body.layout-compact .outcome-card {
+  padding: 16px 20px;
+  gap: 8px;
+  border-radius: 16px;
+}
+
+body.layout-compact .outcome-title {
+  font-size: 1.35rem;
+}
+
+body.layout-compact .multiplier-pill {
+  font-size: 0.95rem;
+  padding: 4px 8px;
+}
+
+body.layout-compact .percentage-value {
+  font-size: 3.5rem;
+}
+
+body.layout-compact .percentage-symbol {
+  font-size: 1.5rem;
+}
+
+body.layout-compact .outcome-stats-footer {
+  font-size: 0.95rem;
+  padding-top: 6px;
+}
+
+body.layout-compact .progress-bar-container {
+  height: 12px;
 }
 
 /* ==========================================================================
    LAYOUT 4: MINIMALISTA (MICRO-WIDGET)
-   Mínimo impacto visual, ideal para esquinas o encima de la cámara
    ========================================================================== */
 body.layout-minimal .prediction-widget {
-  max-width: 360px;
+  width: 85%;
+  max-width: 680px;
   padding: 0;
-  gap: 8px;
-}
-
-body.layout-minimal .timer-box {
-  margin: 0;
+  gap: 10px;
 }
 
 body.layout-minimal .status-pill {
-  padding: 3px 8px;
-  font-size: 0.65rem;
+  padding: 6px 12px;
+  font-size: 0.8rem;
 }
 
 body.layout-minimal .status-dot {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 
 body.layout-minimal .prediction-title {
-  font-size: 0.98rem;
-  line-height: 1.2;
+  font-size: 1.25rem;
 }
 
 body.layout-minimal .pool-stats-row {
-  font-size: 0.68rem;
-  padding-bottom: 4px;
+  font-size: 0.82rem;
 }
 
 body.layout-minimal .outcomes-arena {
-  gap: 8px;
+  gap: 12px;
 }
 
 body.layout-minimal .outcome-card {
-  padding: 8px 10px;
-  gap: 3px;
-  border-radius: 10px;
+  padding: 12px 14px;
+  gap: 6px;
+  border-radius: 12px;
 }
 
 body.layout-minimal .outcome-title {
-  font-size: 0.85rem;
+  font-size: 1.05rem;
+}
+
+body.layout-minimal .multiplier-pill {
+  font-size: 0.8rem;
 }
 
 body.layout-minimal .percentage-value {
-  font-size: 1.45rem;
+  font-size: 2.2rem;
 }
 
 body.layout-minimal .percentage-symbol {
-  font-size: 0.85rem;
+  font-size: 1.1rem;
 }
 
 body.layout-minimal .outcome-stats-footer {
-  font-size: 0.66rem;
-  padding-top: 3px;
+  font-size: 0.8rem;
 }
 
 body.layout-minimal .progress-bar-container {
-  height: 6px;
+  height: 8px;
+}
+
+/* ==========================================================================
+   RESPONSIVE ADJUSTMENTS (Para ventanas pequeñas o laptops)
+   ========================================================================== */
+@media (max-width: 1200px) {
+  .prediction-title {
+    font-size: 1.8rem;
+  }
+  .percentage-value {
+    font-size: 3.8rem;
+  }
+  .outcome-title {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 800px) {
+  .prediction-title {
+    font-size: 1.3rem;
+  }
+  .percentage-value {
+    font-size: 2.5rem;
+  }
+  .outcome-title {
+    font-size: 1.1rem;
+  }
+  .status-pill {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
 }
 

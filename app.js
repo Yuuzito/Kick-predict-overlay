@@ -13,9 +13,18 @@
   // --------------------------------------------------------------------------
   const urlParams = new URLSearchParams(window.location.search);
 
+  // Migración de versión para garantizar que Estándar (1080p) sea el predeterminado
+  try {
+    if (localStorage.getItem('kick_overlay_v') !== '2.0') {
+      localStorage.setItem('kick_overlay_v', '2.0');
+      localStorage.removeItem('kick_overlay_layout');
+    }
+  } catch (e) {}
+
   const CONFIG = {
     channel: urlParams.get('channel') || 'xqc',
-    layout: urlParams.get('layout') || localStorage.getItem('kick_overlay_layout') || 'compact',
+    layout: urlParams.get('layout') || localStorage.getItem('kick_overlay_layout') || 'standard',
+    position: urlParams.get('pos') || localStorage.getItem('kick_overlay_pos') || 'center',
     cleanMode: urlParams.get('clean') === '1' || urlParams.get('clean') === 'true',
     autoHideInactive: urlParams.get('autohide') !== '0' && urlParams.get('autohide') !== 'false', // Activado por defecto
     isDemo: urlParams.get('demo') === '1' || urlParams.get('demo') === 'true',
@@ -703,6 +712,15 @@
       });
     });
 
+    // Position Selector Buttons (Vertical alignment on 1080p canvas)
+    const posButtons = document.querySelectorAll('.btn-pos-option');
+    posButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const selected = btn.getAttribute('data-pos');
+        if (selected) applyPosition(selected);
+      });
+    });
+
     // Auto-hide toggle
     DOM.autohideToggle.checked = CONFIG.autoHideInactive;
     DOM.autohideToggle.addEventListener('change', (e) => {
@@ -756,8 +774,8 @@
   }
 
   function applyLayout(layoutName) {
-    const validLayouts = ['compact', 'standard', 'horizontal', 'minimal'];
-    if (!validLayouts.includes(layoutName)) layoutName = 'compact';
+    const validLayouts = ['standard', 'horizontal', 'compact', 'minimal'];
+    if (!validLayouts.includes(layoutName)) layoutName = 'standard';
 
     CONFIG.layout = layoutName;
     try {
@@ -781,13 +799,40 @@
     updateObsUrlPreview();
   }
 
+  function applyPosition(posName) {
+    const validPositions = ['top', 'center', 'bottom'];
+    if (!validPositions.includes(posName)) posName = 'center';
+
+    CONFIG.position = posName;
+    try {
+      localStorage.setItem('kick_overlay_pos', posName);
+    } catch (e) {}
+
+    // Update body classes
+    document.body.classList.remove('pos-top', 'pos-center', 'pos-bottom');
+    document.body.classList.add(`pos-${posName}`);
+
+    // Update active button state
+    const buttons = document.querySelectorAll('.btn-pos-option');
+    buttons.forEach(btn => {
+      if (btn.getAttribute('data-pos') === posName) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    updateObsUrlPreview();
+  }
+
   function getObsCleanUrl() {
     const loc = window.location;
     const base = `${loc.protocol}//${loc.host}${loc.pathname}`;
     const params = new URLSearchParams();
     params.set('channel', CONFIG.channel);
     params.set('clean', '1');
-    if (CONFIG.layout && CONFIG.layout !== 'compact') params.set('layout', CONFIG.layout);
+    if (CONFIG.layout && CONFIG.layout !== 'standard') params.set('layout', CONFIG.layout);
+    if (CONFIG.position && CONFIG.position !== 'center') params.set('pos', CONFIG.position);
     if (CONFIG.autoHideInactive) params.set('autohide', '1');
     return `${base}?${params.toString()}`;
   }
@@ -803,6 +848,7 @@
   function init() {
     setupControllerUI();
     applyLayout(CONFIG.layout);
+    applyPosition(CONFIG.position);
 
     if (CONFIG.isDemo) {
       DemoSimulator.start();

@@ -7,7 +7,9 @@
   <title>Kick Prediction Overlay - OBS Studio</title>
   <meta name="description"
     content="Overlay interactivo y elegante para OBS Studio que muestra predicciones en vivo de Kick, porcentajes, puntos y ganador.">
-  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="style.css?v=2.0">
 </head>
 
 <body>
@@ -166,21 +168,40 @@
       <div class="form-group">
         <label>Diseño de Interfaz:</label>
         <div class="layout-selector-grid" id="layout-selector">
-          <button type="button" class="btn-layout-option active" data-layout="compact" title="Diseño compacto optimizado para stream">
-            <span>📐</span>
-            <span>Compacto</span>
-          </button>
-          <button type="button" class="btn-layout-option" data-layout="standard" title="Diseño espacioso y clásico">
+          <button type="button" class="btn-layout-option active" data-layout="standard" title="Diseño Completo 1080p para OBS (1680px)">
             <span>🖼️</span>
-            <span>Estándar</span>
+            <span>Estándar (1080p)</span>
           </button>
-          <button type="button" class="btn-layout-option" data-layout="horizontal" title="Formato franja horizontal / esports">
+          <button type="button" class="btn-layout-option" data-layout="horizontal" title="Formato franja horizontal / esports (1840px)">
             <span>📏</span>
             <span>Horizontal</span>
           </button>
-          <button type="button" class="btn-layout-option" data-layout="minimal" title="Micro widget para esquinas o webcam">
+          <button type="button" class="btn-layout-option" data-layout="compact" title="Diseño mediano para stream (1100px)">
+            <span>📐</span>
+            <span>Compacto</span>
+          </button>
+          <button type="button" class="btn-layout-option" data-layout="minimal" title="Micro widget para esquinas o webcam (680px)">
             <span>✨</span>
             <span>Minimal</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Posición en Pantalla OBS 1920x1080 -->
+      <div class="form-group">
+        <label>Posición Vertical (OBS 1920x1080):</label>
+        <div class="layout-selector-grid" id="position-selector">
+          <button type="button" class="btn-pos-option" data-pos="top" title="Colocar arriba en la pantalla">
+            <span>⬆️</span>
+            <span>Arriba</span>
+          </button>
+          <button type="button" class="btn-pos-option active" data-pos="center" title="Colocar en el centro de la pantalla">
+            <span>⏺️</span>
+            <span>Centro</span>
+          </button>
+          <button type="button" class="btn-pos-option" data-pos="bottom" title="Colocar abajo en la pantalla">
+            <span>⬇️</span>
+            <span>Abajo</span>
           </button>
         </div>
       </div>
